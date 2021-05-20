@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Project</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <style>
+            #success{
+                color: chartreuse;
+            }
+        </style>
+    </head>
+    <img>
+        
+        <div style="margin-left: 230px; margin-top: 200px;">
+            <h2><u>Question order sort screen</u></h2>
+            <br>
+            <h3>Q) Rank these coffees in order of most preferred to least preferred?</h3>
+            <table class="table table-bordered table-striped" style="width: 400px;">
+                <tr>
+                    <th>order</th>
+                    <th>Coffee</th>
+                </tr>
+                <tbody class="row_drag">
+                    <tr id='1' class="Mocha">
+                        <td>1</td>
+                        <td><img src="./image/mocha.png"> - Mocha</td>
+                    </tr>
+                    <tr id='2' class="Café latte">
+                        <td>2</td>
+                        <td><img src="./image/latte.png"> - Café latte</td>
+                    </tr>
+                    <tr id='3' class="Cappuccino">
+                        <td>3</td>
+                        <td><img src="./image/cappuccino.png"> - Cappuccino</td>
+                    </tr>
+                    <tr id='4' class="Americano">
+                        <td>4</td>
+                        <td><img src="./image/americano.png"> - Americano</td>
+                    </tr>
+                    
+                    <tr id='5' class="Espresso">
+                        <td>5</td>
+                        <td><img src="./image/expresso.png"> - Espresso</td>
+                    </tr>
+
+                    <tr id='6' class="Macchiato">
+                        <td>6</td>
+                        <td><img src="./image/macchiato.png"> - Macchiato</td>
+                    </tr>
+
+                    <tr id='7' class="Flat White">
+                        <td>7</td>
+                        <td><img src="./image/coffee-cup.png"> - Flat White</td>
+                    </tr>
+        
+                </tbody>
+            </table>
+            <h1 id="success"></h1>
+            <button type="button" class="btn btn-primary btn-lg" onclick="submit()">Submit</button>
+        </div>
+        <script type="text/javascript">
+            var selectedRowOrder = new Array('1','2','3','4','5','6','7');
+            var selectedRowCoffee = new Array('Mocha','Café latte','Cappuccino','Americano','Espresso','Macchiato','Flat White');
+            $( ".row_drag" ).sortable({
+                delay: 100,
+                stop: function() {
+                    $('.row_drag>tr').each(function() {
+                        selectedRowOrder.push($(this).attr("id"));
+                        selectedRowCoffee.push($(this).attr("class"));
+                    });
+                }
+            });
+            function submit(){
+                selectedRowCoffee.map((coffee)=>{
+                    selectedRowCoffee.push(coffee.replace(" ui-sortable-handle", ""));
+                })
+                let order = selectedRowOrder.slice(-7)
+                let coffee = selectedRowCoffee.slice(-7) 
+
+                console.log(coffee)
+
+                var settings = {
+                "url": "http://localhost/order_project/",
+                "method": "POST",
+                "timeout": 0,
+                "headers": {
+                    "Content-Type": "text/plain"
+                },
+                "data": `{\"coffee\":["${coffee[0]}","${coffee[1]}","${coffee[2]}","${coffee[3]}","${coffee[4]}","${coffee[5]}","${coffee[6]}"],\"order\":[${order[0]},${order[1]},${order[2]},${order[3]},${order[4]},${order[5]},${order[6]}]}`,
+                };
+
+                $.ajax(settings).done(function (response) {
+                console.log(response.status);
+                });
+                document.getElementById('success').innerText = "SuccesssFully Submitted"
+            }
+        </script>
+    </body>
+</html>
